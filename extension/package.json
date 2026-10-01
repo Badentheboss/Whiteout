@@ -1,0 +1,16 @@
+{
+  "name": "parallax-extension",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.328",
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.25.12",
+    "typescript": "5.9.3"
+  }
+}

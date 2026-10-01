@@ -1,0 +1,7 @@
+playwright==1.63.0
+pandas==2.3.3
+pyarrow==21.0.0
+scikit-learn==1.7.2
+streamlit==1.64.0
+pytest==8.4.2
+pillow==11.3.0

@@ -1,0 +1,6 @@
+[project]
+name = "parallax-eval"
+version = "0.1.0"
+requires-python = ">=3.11"
+[project.scripts]
+parallax = "parallax.cli:main"

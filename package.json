@@ -1,0 +1,11 @@
+{
+  "name": "parallax",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "build": "npm --prefix extension run build",
+    "test": "npm --prefix extension test",
+    "package": "npm run build && cd extension/dist && zip -rq ../../store/parallax-0.1.0.zip ."
+  },
+  "engines": { "node": ">=20" }
+}

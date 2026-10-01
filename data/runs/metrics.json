@@ -1,0 +1,7 @@
+{
+  "run_id": "local-20261001",
+  "note": "Five local fixtures; scripted naive agent only. No real LLM used.",
+  "detection_recall": 1.0,
+  "false_positive_pages": 0,
+  "network_content_requests": 0
+}
