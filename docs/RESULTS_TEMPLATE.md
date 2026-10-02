@@ -7,4 +7,4 @@ Run ID: `[run id]` · Date: `[date]` · Agent: `[scripted naive / model]`
 | Rules | | | | | |
 | Classifier | | | | | |
 
-Include: PR curve, recall by vector/category, preservation screenshot diff, latency distribution, and failure gallery. Generate from `data/runs/results.parquet` with `python -m parallax.evaluate`; do not fill blanks without a matching run artifact.
+Include: PR curve, recall by vector/category, preservation screenshot diff, latency distribution, and failure gallery. Generate with `python -m parallax.evaluate --run data/runs/<run-id>`; do not fill blanks without matching artifacts. `data/runs/results.parquet` is a superseded v0.1 demonstration, not a valid result source.

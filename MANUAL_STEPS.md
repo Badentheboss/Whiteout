@@ -1,8 +1,10 @@
-# Manual steps
+# Human contributions
 
-1. Run the README setup commands, then open `chrome://extensions`.
-2. Turn on **Developer mode**, select **Load unpacked**, and choose `extension/dist`.
-3. Open `http://127.0.0.1:8765/recipe.html` while the local fixture server is running; inspect the Parallax popup/report.
-4. Create a Chrome Web Store developer account, pay its one-time fee, then use **New item** → upload `store/parallax-0.1.0.zip`. Copy the text from `store/LISTING.md`, review the privacy policy, complete store-specific disclosures, and submit.
-5. To add a real-agent measurement, create a budget-capped API/local-model configuration outside the repo, run only against localhost canaries, and record model/version/budget/run ID.
-6. For the rating study, open `parallax dashboard`, rate 30 queued findings for visibility and instruction intent, export `ratings.jsonl`, then run the agreement report once implemented with those ratings.
+1. Follow README setup; keep one loaded Parallax version. Load `extension/dist`, not the ZIP.
+2. Serve the repository on localhost and open `data/smoke/demo-1.html` through the server. Compare Highlight, Sanitize, Undo, and the working button.
+3. Open the dashboard using `scripts\dashboard.cmd`. Inspect evidence and rate the 30 sampled candidates. Ratings save to the selected run's `human-ratings.jsonl`; none are fabricated.
+4. Review source terms, page/asset licenses, and replay fidelity before redistributing snapshots. Download success is not legal approval.
+5. Add reviewed interaction tasks and diverse article/forum/store/app sources. Renamed templates do not count as independent sites.
+6. A real local-model agent study still needs a bounded model and legitimate-task answers. The scripted probe alone cannot establish LLM attack success.
+
+No paid Web Store account or API is needed; this release is not a store submission.

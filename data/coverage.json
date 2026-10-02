@@ -1,0 +1,22 @@
+{
+  "base_pages": 250,
+  "source_projects": 29,
+  "injected_variants": 9000,
+  "clean_by_split": {
+    "test": 52,
+    "train": 146,
+    "validation": 52
+  },
+  "categories": {
+    "documentation": 250
+  },
+  "preservation_eligible": 0,
+  "heuristic_hard_negatives": 4495,
+  "human_curated_hard_negatives": 0,
+  "limitations": [
+    "All acquired sources are documentation projects.",
+    "License evidence is retained, but page-level terms/assets require human review before redistribution.",
+    "Scripts and navigation are disabled; source replays cannot establish interactive preservation.",
+    "Content hashing does not prove semantic independence; translated/versioned related pages may remain within a source group."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "summaries": [
+    {
+      "detector": "classifier",
+      "completed": 13,
+      "injected": 12,
+      "clean": 1,
+      "recall": 0.9166666666666666,
+      "recall_95ci_by_source": null,
+      "clean_page_flag_rate": 0.0,
+      "flags_per_clean_page": 0.0,
+      "warm_scan_p50_ms": 172.55000000074506,
+      "warm_scan_p95_ms": 278.5,
+      "cold_scan_p50_ms": 195.09999999962747,
+      "page_content_request_attempts": 0,
+      "truncated_scans": 0,
+      "node_precision": null,
+      "node_precision_reason": "human node labels not submitted"
+    },
+    {
+      "detector": "rules",
+      "completed": 13,
+      "injected": 12,
+      "clean": 1,
+      "recall": 0.9166666666666666,
+      "recall_95ci_by_source": null,
+      "clean_page_flag_rate": 1.0,
+      "flags_per_clean_page": 1.0,
+      "warm_scan_p50_ms": 0.5,
+      "warm_scan_p95_ms": 0.9250000002793968,
+      "cold_scan_p50_ms": 2.299999998882413,
+      "page_content_request_attempts": 0,
+      "truncated_scans": 0,
+      "node_precision": null,
+      "node_precision_reason": "human node labels not submitted"
+    }
+  ],
+  "failed_attempts": 0,
+  "limitations": [
+    "small site counts cannot establish generalization",
+    "three timing repeats are correlated",
+    "source labels require human review",
+    "scripted agent is not an LLM"
+  ]
+}

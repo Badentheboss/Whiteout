@@ -2,6 +2,16 @@ node_modules/
 extension/dist/
 extension/test-results/
 .venv/
+data/corpus/
+models/minilm-source/
+models/minilm.onnx
+extension/dist/
+data/runs/20*/pages/
+data/runs/20*/extension/
+data/runs/20*/observations.jsonl
+data/runs/20*/harness/
+store/*-local.zip
+store/*-local.sha256
 data/external-fixtures/
 data/external-manifest.jsonl
 __pycache__/

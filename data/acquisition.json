@@ -1,0 +1,56 @@
+{
+  "pages": 290,
+  "projects": 29,
+  "failures": [
+    {
+      "url": "https://docs.python.org/3/whatsnew/changelog.html",
+      "error_type": "ValueError",
+      "reason": "response-too-large"
+    },
+    {
+      "url": "https://docs.djangoproject.com/pt-br/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.djangoproject.com/pl/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.djangoproject.com/ko/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.djangoproject.com/it/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.djangoproject.com/id/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.djangoproject.com/es/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.djangoproject.com/el/5.2/topics/",
+      "error_type": "RuntimeError",
+      "reason": "robots-disallowed"
+    },
+    {
+      "url": "https://docs.pydantic.dev/latest/",
+      "error_type": "RuntimeError",
+      "reason": "cross-origin-redirect-requires-review"
+    }
+  ],
+  "limitations": [
+    "documentation-heavy",
+    "replay transformations exclude preservation claims",
+    "human review pending"
+  ]
+}

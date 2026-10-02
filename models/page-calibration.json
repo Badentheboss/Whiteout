@@ -1,0 +1,10 @@
+{
+  "run": "data/runs/20261002T044438Z-0d1fdf3a",
+  "observations_sha256": "f1a3a415888f53c3d998edca056278dbb42b29ec3655ccefc942f9ecc85dd0f7",
+  "cutoff": 0.8628280930691071,
+  "recall": 0.875,
+  "clean_page_fpr": 0.0,
+  "clean_pages": 6,
+  "injected_pages": 72,
+  "warning": "Validation estimate only; small clean denominators do not establish a population 2% FPR."
+}

@@ -1,0 +1,29 @@
+{
+  "linear": {
+    "validation_ap": 1.0,
+    "cutoff": 0.8628280930691071,
+    "recall": 1.0,
+    "candidate_fpr": 0.0
+  },
+  "training_examples": 3195,
+  "validation_examples": 679,
+  "limitations": [
+    "negative labels include heuristic candidates",
+    "candidate FPR does not establish clean-page FPR",
+    "only the final encoder block is fine-tuned; small authored positive set"
+  ],
+  "minilm": {
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "license": "Apache-2.0",
+    "trained": "last encoder block + linear classification head",
+    "quantized_sha256": "2758b1955f9c18bdd4fbeadd88966872f0df29ad1aca26043e2dee93f4462690",
+    "bytes": 22870548,
+    "validation_ap": 0.9047619047619047,
+    "cutoff": 0.5879858732223511,
+    "max_tokens": 128,
+    "recall": 1.0,
+    "candidate_fpr": 0.01188707280832095
+  },
+  "selected": "tfidf-logistic-v2"
+}

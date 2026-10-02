@@ -1,33 +1,89 @@
-# Parallax
+# Parallax: rendering evidence and local instruction detection
 
-Parallax is a defensive Chrome MV3 prototype for finding text an automated page extractor may consume even though a human cannot see it. It is not a general prompt-injection solution and does not inspect image attacks, visible comments, cross-origin iframe internals, or network/tool execution.
+Research question: **Can browser-rendering evidence plus a small local classifier detect hidden instructions while preserving legitimate content?**
 
-## Quick start
+Experimental localhost-scoped Chrome extension, Python harness, and Streamlit dashboard—not a proven prompt-injection defense. Version 0.1 results are **superseded demonstrations**. Do not cite their attack-success/privacy numbers. See [the correction](data/runs/SUPERSEDED.md).
 
-```sh
-npm install --prefix extension
-python3 -m venv .venv && .venv/bin/pip install -r eval/requirements.txt
-npm run build
-PYTHONPATH=eval .venv/bin/python -m parallax.prepare
-PYTHONPATH=eval .venv/bin/python -m parallax.run
-PYTHONPATH=eval .venv/bin/python -m parallax.evaluate
-PYTHONPATH=eval .venv/bin/python -m parallax.dashboard
+See [implementation status](docs/IMPLEMENTATION_STATUS.md) for completed evidence and outstanding acceptance criteria. This release does not claim the full study is finished.
+
+## Windows quick start
+
+Extract the repository ZIP first. Open Command Prompt inside `Whiteout-main`, not Python's `>>>` prompt. Install Python 3.12 and Node.js LTS if your administrator permits them, then run:
+
+```bat
+scripts\setup.cmd
+scripts\run-smoke.cmd
+scripts\dashboard.cmd
 ```
 
-The committed data are a deterministic 100-page, project-authored CC0 local benchmark: 20 pages each across recipe, documentation, storefront, forum, and task-board layouts, with ten hidden-text vectors rotated across classes. It is a reproducible evaluation corpus, not a claim that these are 100 real web pages. Source URLs, license, snapshot path, injection vector, payload, ground-truth selector, seed, and extractor profiles are required for each `data/manifest.jsonl` row. Add real pages only after checking robots.txt, terms, and licenses; commit source URL and fetch instructions rather than unlicensed snapshots.
+The dashboard is at `http://127.0.0.1:8501`. Opening it does not run an experiment. Results save automatically to unique `data\runs` directories. Preserve the entire directory, including `pages`, for screenshots and extraction evidence. The dashboard also exports observations.
 
-The evaluation harness uses an installed Google Chrome channel rather than Playwright's separately downloaded Chromium. This makes the run friendlier to managed campus PCs; Chrome must already be installed and permitted to launch.
+For a complete portable evidence bundle: `python -m parallax.export_run --run data/runs/<run-id> --output store/my-run.zip`. This includes detailed reports, screenshots, extractions, and the run's packaged extension snapshot where available.
 
-## Optional real-document upgrade
+On managed PCs, blocked installations require administrator help. Never disable TLS verification. Automation uses Playwright's bundled Chromium, not installed Chrome/Edge, following [official guidance](https://playwright.dev/python/docs/chrome-extensions).
 
-`data/sources/approved_docs.jsonl` is a reviewed registry of 25 public documentation pages from Python, MDN, Django, Flask, and FastAPI, with source attribution and license URLs. Run `python -m parallax.real_corpus` only from a network that permits it: it checks each site's `robots.txt`, uses a named user agent, rate-limits to one request per second, stores snapshots only under ignored `data/external-fixtures/`, and writes a 250-variant provenance manifest. Run it with `PARALLAX_MANIFEST=data/external-manifest.jsonl python -m parallax.run`. These source-derived files are never committed; review each fetched page and its license before publishing derived artifacts.
+## macOS/Linux quick start
 
-`npm run package` writes the unpacked extension zip to `store/`. Load `extension/dist` through `chrome://extensions` → Developer mode → Load unpacked. The extension uses only `storage`, analyzes locally, sends no page text to a server, and retains reports only for the current browser session.
+```sh
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r eval/requirements.txt
+.venv/bin/python -m playwright install chromium
+npm ci --prefix extension
+npm run build
+export PYTHONPATH="$PWD/eval"
+.venv/bin/python -m parallax.smoke
+.venv/bin/python -m parallax.run --manifest data/smoke-manifest.jsonl
+.venv/bin/python -m parallax.evaluate
+.venv/bin/python -m streamlit run eval/parallax/dashboard.py --server.address 127.0.0.1
+```
 
-## Detector modes
+The 13-page smoke corpus is authored diagnostic material, not real-site generalization evidence. For a popup demo: serve the repository with `.venv/bin/python -m http.server 8765 --bind 127.0.0.1`, load **extension/dist** at `chrome://extensions` → Developer mode → Load unpacked, then visit `http://127.0.0.1:8765/data/smoke/demo-1.html`. Try Scan, Highlight, Sanitize, Undo, and the example button. Load neither the ZIP nor an empty directory.
 
-Rules flags DOM text whose extractor visibility diverges from CSS/geometry-based human visibility. Classifier mode adds a compact instruction-likeness lexical baseline; it is a placeholder for a trained, on-device ONNX encoder, not a claim of ML performance. Warn outlines candidates and attaches a reason. Sanitize hides only flagged candidate elements and should be run with screenshot, visible-text, interactive-count, and click-smoke preservation checks.
+## Research pipeline
 
-## Data and benchmark licenses
+Use the virtual environment Python and `PYTHONPATH=eval` (Windows: `set PYTHONPATH=%CD%\eval`).
 
-Local fixtures: CC0-1.0 (project-authored). Chrome documentation is CC-BY-4.0; Playwright is Apache-2.0. Public benchmark methodology is cited in `DECISIONS.md`; no benchmark data are redistributed.
+```sh
+python -m parallax.corpus
+python -m parallax.dataset
+python -m parallax.provenance
+python -m pip install -r eval/requirements-training.txt
+python -m parallax.train --encoder
+npm run build
+python -m parallax.subset --split validation
+python -m parallax.run --manifest data/validation-subset.jsonl
+python -m parallax.evaluate
+python -m parallax.calibrate --run data/runs/<validation-run-id>
+npm run build
+# Freeze configuration before inspecting test results.
+python -m parallax.run --split test
+python -m parallax.evaluate
+```
+
+`python -m parallax.run --split all` executes all 9,250 rows, both detectors, three scans each. It is a separate long experiment. Resume with the same arguments plus `--resume data/runs/<run-id>`; packaged-extension and manifest hashes must match. Completed rows are retained; failures are recorded. Generated variants are not completed experiments.
+
+Acquisition collected 290 distinct-content pages from 29 projects; balanced selection retains 250 controls plus 9,000 variants. All are documentation, not the requested broader mix of forums, stores, articles, and apps. See [data card](docs/DATA_CARD.md), [model card](docs/MODEL_CARD.md), and [benchmark card](docs/BENCHMARK_CARD.md).
+
+## Detectors and evidence
+
+- A: rendering divergence from DOM/CSS, geometry, comments, attributes, Unicode, pseudo-content, open shadow roots, and same-origin frames.
+- B: A plus a trained TF-IDF/logistic classifier or partially fine-tuned, quantized MiniLM candidate. Validation selects the model; larger is not automatically better.
+- The harness calls the shipped extension through its private popup messaging API and verifies version/configuration.
+- Warn uses extension-owned overlays. Sanitize blanks exact text/comment/attribute content and supports guarded undo. Unique literal inline pseudo-content rules can be rewritten; shared/external pseudo sources remain unsupported.
+- Runs retain findings, extractor outputs, timings, screenshots, observed traffic attempts, failures, configuration, and environment. Missing measurements remain null with reasons.
+
+## Tests and release
+
+```sh
+PYTHONPATH=eval .venv/bin/python -m pytest eval/tests -q
+npm test
+npm run package
+```
+
+Packaging creates `store/parallax-0.2.0.zip` and a SHA-256 file, without overwriting an existing release. Extract and load the folder containing `manifest.json`. The 0.1 ZIP is historical and superseded. CI runs the small deterministic suite, not the full study. No paid endpoint or store account is required.
+
+## Boundaries
+
+Default extension scope is localhost only. Browser-visible traffic logging is not an OS-wide privacy proof. Downloaded replays disable scripts/navigation and have incomplete assets; none currently supports preservation conclusions. The scripted agent is **not an LLM**. Independent source review, human labels, diverse coverage, complete experiments, and a bounded local-model agent study remain necessary for strong security claims.
+
+If a suitable generative model is already installed locally, run `python -m parallax.local_agent --model /path/to/model --run data/runs/<run-id> --max-items 8`. This performs no automatic model download; it records truncated-context title-task and canary outcomes, not full tool-use security.
