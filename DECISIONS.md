@@ -3,7 +3,7 @@
 | Decision | Alternatives | Reason | Reversal |
 |---|---|---|---|
 | Use raw TS + esbuild instead of WXT/Plasmo | WXT, Plasmo | Minimal audit surface and reproducible static MV3 output | Adopt WXT if multi-browser packaging becomes necessary |
-| Ship local five-fixture run, not claim a 100-page corpus | scrape 100 pages | Empty repo and time-bound execution; fabricated corpus/results are unacceptable | Add reviewed sources through prepare manifest |
+| Ship a 100-page project-authored CC0 local corpus, not claim a scraped web corpus | scrape 100 pages | It gives reproducible ground truth without redistributing third-party content or fabricating provenance | Add reviewed external sources through prepare manifest |
 | Rules score is lexical baseline, not an ML model | bundled ONNX model | A trained/exported model needs labeled data and model-card review | Add ONNX Runtime Web after held-out training run |
 | No host permissions | broad host permissions | Static content-script matches provide least privilege for user-loaded pages; no network | Add optional host permissions only with user-visible scope |
 | Treat sr-only as benign in classifier path | flag all invisible text | Accessibility labels are expected hidden content and main FP risk | Add explicit semantic hard-negative taxonomy |

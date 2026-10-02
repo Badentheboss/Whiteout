@@ -14,7 +14,7 @@ PYTHONPATH=eval .venv/bin/python -m parallax.evaluate
 PYTHONPATH=eval .venv/bin/python -m parallax.dashboard
 ```
 
-The committed data are five synthetic/local CC0 fixtures. They are intentionally not a claim of a representative 100-page corpus. Source URLs, license, snapshot path, injection vector, payload, ground-truth selector, seed, and extractor profiles are required for each `data/manifest.jsonl` row. Add real pages only after checking robots.txt, terms, and licenses; commit source URL and fetch instructions rather than unlicensed snapshots.
+The committed data are a deterministic 100-page, project-authored CC0 local benchmark: 20 pages each across recipe, documentation, storefront, forum, and task-board layouts, with ten hidden-text vectors rotated across classes. It is a reproducible evaluation corpus, not a claim that these are 100 real web pages. Source URLs, license, snapshot path, injection vector, payload, ground-truth selector, seed, and extractor profiles are required for each `data/manifest.jsonl` row. Add real pages only after checking robots.txt, terms, and licenses; commit source URL and fetch instructions rather than unlicensed snapshots.
 
 The evaluation harness uses an installed Google Chrome channel rather than Playwright's separately downloaded Chromium. This makes the run friendlier to managed campus PCs; Chrome must already be installed and permitted to launch.
 

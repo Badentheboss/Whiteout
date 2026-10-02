@@ -16,7 +16,7 @@ Parallax protects AI browsing workflows from a narrow but important class of att
 | 7 | Adaptive attacks and analysis | Risk gates and figures |
 | 8 | Store package and resume write-up | Submission-ready package |
 
-The committed run deliberately covers five CC0 local fixtures—not a claimed 100-page web corpus. `parallax prepare` is the reproducible path for adding sources after license/terms review. Every source must stay provenance-tagged, site-split from training, and snapshot only when allowed.
+The committed run covers a 100-page CC0 project-authored local corpus—not a claimed 100-page web crawl. `parallax prepare` is the reproducible path for adding reviewed external sources after license/terms review. Every source must stay provenance-tagged, site-split from training, and snapshot only when allowed.
 
 ## System
 
