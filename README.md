@@ -16,6 +16,8 @@ PYTHONPATH=eval .venv/bin/python -m parallax.dashboard
 
 The committed data are five synthetic/local CC0 fixtures. They are intentionally not a claim of a representative 100-page corpus. Source URLs, license, snapshot path, injection vector, payload, ground-truth selector, seed, and extractor profiles are required for each `data/manifest.jsonl` row. Add real pages only after checking robots.txt, terms, and licenses; commit source URL and fetch instructions rather than unlicensed snapshots.
 
+The evaluation harness uses an installed Google Chrome channel rather than Playwright's separately downloaded Chromium. This makes the run friendlier to managed campus PCs; Chrome must already be installed and permitted to launch.
+
 `npm run package` writes the unpacked extension zip to `store/`. Load `extension/dist` through `chrome://extensions` → Developer mode → Load unpacked. The extension uses only `storage`, analyzes locally, sends no page text to a server, and retains reports only for the current browser session.
 
 ## Detector modes

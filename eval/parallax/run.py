@@ -11,7 +11,7 @@ async def main_async():
  RUNS.mkdir(parents=True,exist_ok=True); os.chdir(DATA/'fixtures'); server=ThreadingHTTPServer(('127.0.0.1',8765),Quiet); Thread(target=server.serve_forever,daemon=True).start()
  manifest=[json.loads(x) for x in (DATA/'manifest.jsonl').read_text().splitlines()]; rows=[]
  async with async_playwright() as p:
-  extension=str(ROOT/'extension'/'dist'); browser=await p.chromium.launch_persistent_context('',headless=True,args=[f'--disable-extensions-except={extension}',f'--load-extension={extension}'])
+  extension=str(ROOT/'extension'/'dist'); browser=await p.chromium.launch_persistent_context('',channel='chrome',headless=True,args=[f'--disable-extensions-except={extension}',f'--load-extension={extension}'])
   for item in manifest:
    page=await browser.new_page(); t=time.perf_counter(); await page.goto(item['source_url']); findings=await page.evaluate(detector_js()); latency=(time.perf_counter()-t)*1000
    for d in ['rules','classifier']:
