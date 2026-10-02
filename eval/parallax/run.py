@@ -14,17 +14,11 @@ from .config import ROOT,DATA,RUNS
 from .dataset import load,validate
 from .browser import ExtensionBrowser
 from .metrics import injection_hit,naive_agent,content_requests,overlap
+from .extractors import extract as extraction, exposure, equality
+from .interactions import execute as execute_task, validate_steps
 
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args): pass
-
-async def extraction(page,cdp):
-    dom=await page.evaluate("""()=>({ 'raw-html':document.documentElement.outerHTML,
-    'text-content':document.documentElement.textContent||'', 'inner-text':document.body.innerText,
-    controls:document.querySelectorAll('button,input,select,textarea,a[href]').length })""")
-    tree=await cdp.send('Accessibility.getFullAXTree')
-    dom['accessibility-tree']='\n'.join(n.get('name',{}).get('value','') for n in tree['nodes'] if not n.get('ignored'))
-    return dom
 
 def pixel_metrics(a,b):
     from io import BytesIO
@@ -35,6 +29,13 @@ def pixel_metrics(a,b):
 
 async def run(args):
     manifest=Path(args.manifest).resolve();rows=load(manifest);validate(rows)
+    lock_path=getattr(args,'lock',None)
+    if lock_path:
+        from .freeze import check
+        lock=json.loads(Path(lock_path).read_text(encoding='utf-8'))
+        failures=check(ROOT,lock)
+        if failures:raise ValueError('Frozen files changed: '+', '.join(failures))
+        if (ROOT/lock['manifest']).resolve()!=manifest:raise ValueError('Lock belongs to another manifest')
     if args.split!='all':rows=[r for r in rows if r['split']==args.split]
     if args.limit:rows=rows[:args.limit]
     if not rows:raise ValueError('No manifest rows selected')
@@ -54,7 +55,8 @@ async def run(args):
         for code in Path(__file__).parent.glob('*.py'):shutil.copyfile(code,folder/'harness'/code.name)
         shutil.copyfile(manifest,folder/'manifest.jsonl')
     config={'manifest_sha256':fingerprint,'harness_sha256':harness_hash.hexdigest(),'split':args.split,'limit':args.limit,'detectors':args.detectors,'repeats':3,
-            'extension_sha256':extension_hash.hexdigest()}
+            'extension_sha256':extension_hash.hexdigest(),
+            'freeze_sha256':hashlib.sha256(Path(lock_path).read_bytes()).hexdigest() if lock_path else None}
     metadata_path=folder/'metadata.json'
     if args.resume:
         previous=json.loads(metadata_path.read_text())
@@ -98,6 +100,13 @@ async def run(args):
                         await page.add_init_script("""window.__parallaxLongTasks=[];try {new PerformanceObserver(l=>window.__parallaxLongTasks.push(...l.getEntries().map(e=>e.duration))).observe({type:'longtask',buffered:true})}catch{}""")
                         url=f"http://127.0.0.1:{server.server_port}/"+Path(item['snapshot_path']).as_posix()
                         await page.goto(url,wait_until='load',timeout=30000);hello=await browser.ready(page)
+                        interaction_before=None
+                        steps=item.get('interaction_steps')
+                        if steps:
+                            validate_steps(steps)
+                            interaction_before=await execute_task(page,steps)
+                            # Discard task side effects before scan and screenshot measurements.
+                            await page.goto(url,wait_until='load',timeout=30000);hello=await browser.ready(page)
                         cdp=await browser.context.new_cdp_session(page);await cdp.send('Performance.enable')
                         before=await extraction(page,cdp);shot_before=await page.screenshot()
                         await page.evaluate('window.__parallaxLongTasks=[]')
@@ -108,13 +117,18 @@ async def run(args):
                         assert report['version']==hello['version']
                         for candidate in report['candidates']:
                             candidate['ground_truth_match']=bool(item['is_injected']) and overlap(candidate['normalized'],item.get('payload_text',''))
+                            candidate['exposure_reasons']={}
                             for profile in ['raw-html','text-content','inner-text','accessibility-tree']:
-                                candidate['profiles'][profile]=candidate['text'].strip() in before[profile]
+                                candidate['profiles'][profile],candidate['exposure_reasons'][profile]=exposure(candidate,before,profile)
                         long_before=await page.evaluate('window.__parallaxLongTasks')
                         actions=(await browser.request(page,'sanitize',detector))['actions']
                         after=await extraction(page,cdp);shot_after=await page.screenshot()
                         task=item.get('task');task_success=None;task_reason='No reviewed interaction task for this source replay'
-                        if task:
+                        interaction_after=None
+                        if steps:
+                            interaction_after=await execute_task(page,steps)
+                            task_success=interaction_after['success'];task_reason=interaction_after['reason']
+                        elif task:
                             try:
                                 await page.locator(task['selector']).click(timeout=3000)
                                 task_success=(await page.locator(task['selector']).inner_text())==task['expected'];task_reason=None
@@ -131,16 +145,14 @@ async def run(args):
                          'is_injected':item['is_injected'],'canary':item.get('canary'),'detector':detector,'model':report['model'],'hit':hit,'flag_count':len(report['findings']),
                          'truncated':report['truncated'],'detector_config':report['config'],'limitations':report['limitations'],'timings':timings,'findings':report['findings'],'candidates':report['candidates'],
                          'sanitization':actions,'preservation':{**pixel_metrics(shot_before,shot_after),'visible_text_equal':before['inner-text']==after['inner-text'],
-                         'controls_equal':before['controls']==after['controls'],'accessibility_equal':before['accessibility-tree']==after['accessibility-tree'],
+                         'controls_equal':before['controls']==after['controls'],'accessibility_equal':equality(before['accessibility-tree'],after['accessibility-tree']),
                          'eligible':item.get('preservation_eligible',False)},
                          'interaction_task_success':task_success,'interaction_task_reason':task_reason,
+                         'interaction_before':interaction_before,'interaction_after':interaction_after,
+                         'interaction_preserved':interaction_after['success'] if interaction_before and interaction_before['success'] else None,
                          'heap_delta':None if h0 is None or h1 is None else h1-h0,'long_tasks_ms':long_before,
                          'network':{'attempts':traffic,'page_content_attempts':len(leaks),'coverage':'requests visible to Playwright context; not an OS-wide audit'},
-                         'profiles':{p:{'exposed':item.get('canary','NO_PAYLOAD') in before[p],
-                                       'agent_off':naive_agent(before[p]),'agent_on':naive_agent(after[p]),
-                                       'canary_success_off':naive_agent(before[p])==item.get('canary') if item['is_injected'] else None,
-                                       'canary_success_on':naive_agent(after[p])==item.get('canary') if item['is_injected'] else None,
-                                       'payload_remaining':bool(item.get('canary')) and item['canary'] in after[p]} for p in ['raw-html','text-content','inner-text','accessibility-tree']}}
+                         'profiles':{p:profile_result(item,before,after,p) for p in ['raw-html','text-content','inner-text','accessibility-tree']}}
                         key=item['variant_id']+'-'+detector
                         scored=[c for c in row['candidates'] if c['hidden'] and c['score'] is not None]
                         row['max_hidden_score']=max((c['score'] for c in scored),default=None)
@@ -164,7 +176,18 @@ async def run(args):
     (DATA/'latest-run.txt').write_text(str(folder.relative_to(ROOT)),encoding='utf-8')
     print(folder)
 
+def profile_result(item,before,after,profile):
+    pre,post=before[profile],after[profile];canary=item.get('canary')
+    return {'exposed':bool(canary and canary in pre) if pre is not None else None,
+            'agent_off':naive_agent(pre) if pre is not None else None,
+            'agent_on':naive_agent(post) if post is not None else None,
+            'canary_success_off':naive_agent(pre)==canary if pre is not None and item['is_injected'] else None,
+            'canary_success_on':naive_agent(post)==canary if post is not None and item['is_injected'] else None,
+            'payload_remaining':bool(canary and canary in post) if post is not None else None,
+            'unavailable_before':before.get('unavailable',{}).get(profile),
+            'unavailable_after':after.get('unavailable',{}).get(profile)}
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--manifest',default=str(DATA/'research-manifest.jsonl'));p.add_argument('--limit',type=int);p.add_argument('--split',choices=['all','train','validation','test'],default='validation');p.add_argument('--resume');p.add_argument('--detectors',nargs='+',default=['rules','classifier'],choices=['rules','classifier']);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--manifest',default=str(DATA/'research-manifest.jsonl'));p.add_argument('--limit',type=int);p.add_argument('--split',choices=['all','train','validation','test'],default='validation');p.add_argument('--resume');p.add_argument('--lock',help='Verify an offline experiment lock before starting');p.add_argument('--detectors',nargs='+',default=['rules','classifier'],choices=['rules','classifier']);a=p.parse_args()
     asyncio.run(run(a))
 if __name__=='__main__':main()

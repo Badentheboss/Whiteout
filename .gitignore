@@ -12,6 +12,7 @@ data/runs/20*/observations.jsonl
 data/runs/20*/harness/
 store/*-local.zip
 store/*-local.sha256
+reviews/
 data/external-fixtures/
 data/external-manifest.jsonl
 __pycache__/

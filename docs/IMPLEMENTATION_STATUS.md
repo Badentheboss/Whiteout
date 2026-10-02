@@ -19,6 +19,14 @@ Actual extension messaging/handshake; local rendering/classifier paths; targeted
 
 ## Still required before the full study is complete
 
+### No-benchmark engineering follow-up
+
+Added explicit pending review forms, balanced non-test review queues, reviewed-candidate node metrics with conflict exclusion, independent-rater agreement, offline shingle-duplicate screening, reviewed multi-category source intake, artifact path/checksum checks, and experiment freeze verification before browser startup. Extraction now reports unavailable AX/frame/shadow evidence as unknown rather than false. See `docs/REVIEW_PROTOCOL.md`. None of these additions creates human judgments, certifies new sources, or claims a new benchmark result. Existing release 0.2.0 evidence remains historical.
+
+Prepared an opt-in payload revision (18 families, 54 machine-authored phrasings) and bounded before/after click/fill/navigation assertions. Neither new dataset generation, model retraining, nor benchmark execution was performed. Local pending forms contain 250 source reviews and 300 non-test content reviews; all remain unanswered.
+
+Follow-up verification: 22 Python tests passed, Python compilation passed, dashboard AppTest loaded without exceptions, and the diff passed whitespace checks. Tests use small authored fixtures and existing model artifacts, not corpus benchmark execution. No tracked data, model weights, or extension release artifacts changed in this follow-up.
+
 - Broader article/forum/store/interactive-app coverage and page-level terms/assets review. All 250 selected bases are documentation; all downloaded replays are excluded from preservation conclusions.
 - At least 300 human-curated hidden examples. The 4,495 existing benign candidates are explicitly machine-labeled, not reviewed.
 - More independent positive template families and wording diversity; semantic deduplication beyond exact hashes.

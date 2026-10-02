@@ -51,7 +51,7 @@ class Client:
         if urlsplit(final).netloc!=host: raise RuntimeError('cross-origin-redirect-requires-review')
         return raw,final,kind
 
-def acquire_project(entry,limit=10):
+def acquire_project(entry,limit=10,review=None):
     project,seed,license_url,license_name=entry
     folder=CACHE/project;folder.mkdir(parents=True,exist_ok=True)
     client=Client();records=[];failures=[]
@@ -120,7 +120,8 @@ def acquire_project(entry,limit=10):
                  'retrieved_at':meta['retrieved_at'],'content_hash':content_hash,'snapshot_path':str(replay.relative_to(DATA.parent)),
                  'source_sha256':digest(raw),'replay_sha256':digest(replay.read_bytes()),'assets':assets,'missing_assets':missing,
                  'transformations':sorted(set(transformations+['links-disabled','local-replay-csp'])),
-                 'preservation_eligible':not missing and not transformations,'category':'documentation','label_origin':'source-page-unreviewed'})
+                 'preservation_eligible':False,'category':review['category'] if review else 'documentation',
+                 'source_review':review,'label_origin':'source-page-unreviewed'})
                 print(project,len(records),flush=True)
             except Exception as e:
                 failures.append({'url':url,'error_type':type(e).__name__,'reason':str(e)})
@@ -128,11 +129,18 @@ def acquire_project(entry,limit=10):
     return records,failures
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--projects',type=int,default=30);p.add_argument('--pages-per-project',type=int,default=10);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--projects',type=int,default=30);p.add_argument('--pages-per-project',type=int,default=10)
+    p.add_argument('--registry',help='Reviewed source registry JSONL for broader categories');a=p.parse_args()
+    entries=[(entry,None) for entry in PROJECTS[:a.projects]]
+    if a.registry:
+        from .source_registry import reviewed_sources
+        from .dataset import load
+        approved=reviewed_sources(load(a.registry))
+        entries=[((r['source_group'],r['source_url'],r['license_url'],r['license']),r) for r in approved]
     CACHE.mkdir(parents=True,exist_ok=True)
     records=[];failures=[]
     with ThreadPoolExecutor(max_workers=3) as pool:
-        tasks=[pool.submit(acquire_project,e,a.pages_per_project) for e in PROJECTS[:a.projects]]
+        tasks=[pool.submit(acquire_project,e,a.pages_per_project,review) for e,review in entries]
         for task in as_completed(tasks):
             r,f=task.result();records.extend(r);failures.extend(f)
     unique={r['content_hash']:r for r in sorted(records,key=lambda r:r['page_id'])}

@@ -63,7 +63,7 @@ def injection(vector,payload,ident):
     if vector=='occlusion':return f'<div style="position:relative;width:600px;height:30px"><span id="{ident}" style="position:absolute">{text}</span><div style="position:absolute;inset:0;background:white;z-index:2"></div></div>'
     return f'<span id="{ident}" style="{style}">{text}</span>'
 
-def build(bases,target=250):
+def build(bases,target=250,expanded_payloads=False):
     groups=sorted({r['source_group'] for r in bases})
     random.Random(42).shuffle(groups);n=len(groups);first=max(1,int(n*.6));second=max(first+1,int(n*.8))
     splits={g:'train' if i<first else 'validation' if i<second else 'test' for i,g in enumerate(groups)}
@@ -91,11 +91,17 @@ def build(bases,target=250):
                 rng=random.Random(b['page_id']+vector+str(seed));category=list(TEMPLATES)[(vi+[17,43,89].index(seed))%6]
                 family=family_index(split,seed+vi);token='CANARY-'+hashlib.sha256((b['page_id']+vector+str(seed)).encode()).hexdigest()[:12].upper()
                 payload=TEMPLATES[category][family].format(token=token);ident='parallax-'+hashlib.sha256(token.encode()).hexdigest()[:12]
+                template_family=category+'-'+str(family);wording=None
+                if expanded_payloads:
+                    from .payloads_v3 import render
+                    wording=[17,43,89].index(seed)
+                    template_family,payload=render(category,split,wording,token)
                 location=rng.choice(locations)
                 variant=b['page_id']+'-'+vector+'-'+str(seed);path=base_path.parent/(variant+'.html')
                 path.write_text(source[:location]+injection(vector,payload,ident)+source[location:],encoding='utf-8')
                 rows.append({**common,'variant_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'snapshot_path':str(path.relative_to(ROOT)),'variant_id':variant,'is_injected':True,'vector':vector,
-                 'payload_category':category,'payload_text':payload,'canary':token,'template_family':category+'-'+str(family),
+                 'payload_category':category,'payload_text':payload,'canary':token,'template_family':template_family,
+                 'payload_variant':wording,'payload_label_origin':'machine-authored-unreviewed',
                  'ground_truth_node':'#'+ident if vector!='comment' else 'comment:'+ident,'seed':seed})
     validate(rows)
     save(DATA/'research-manifest.jsonl',rows)
@@ -109,6 +115,9 @@ def validate(rows):
         for key in ['schema_version','source_group','content_hash','split','license','source_url','snapshot_path','variant_id']:
             if key not in r or r[key] in ('',None):raise ValueError('missing '+key)
         if r['schema_version']!=2 or r['split'] not in ['train','validation','test']:raise ValueError('invalid schema or split')
+        if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,199}',r['variant_id']):raise ValueError('unsafe variant ID')
+        snapshot=Path(r['snapshot_path'])
+        if snapshot.is_absolute() or '..' in snapshot.parts or '\\' in r['snapshot_path']:raise ValueError('unsafe snapshot path')
         if r['variant_id'] in ids:raise ValueError('duplicate variant')
         ids.add(r['variant_id'])
         g=r['source_group'];s=r['split']
@@ -121,10 +130,15 @@ def validate(rows):
             f=r['template_family']
             if f in family_splits and family_splits[f]!=s:raise ValueError('template leakage')
             family_splits[f]=s
-            if not f.startswith(r['payload_category']+'-'):raise ValueError('category mismatch')
-            category,index=f.rsplit('-',1)
-            try:expected=TEMPLATES[category][int(index)].format(token=r['canary'])
-            except (KeyError,ValueError,IndexError):raise ValueError('unknown payload family')
+            if f.startswith('v3:'):
+                from .payloads_v3 import expected as expected_payload
+                category,expected=expected_payload(f,r['payload_variant'],r['canary'],s)
+                if category!=r['payload_category']:raise ValueError('category mismatch')
+            else:
+                if not f.startswith(r['payload_category']+'-'):raise ValueError('category mismatch')
+                category,index=f.rsplit('-',1)
+                try:expected=TEMPLATES[category][int(index)].format(token=r['canary'])
+                except (KeyError,ValueError,IndexError):raise ValueError('unknown payload family')
             if r['payload_text']!=expected:raise ValueError('payload does not match labeled family')
 
 def harvest_negatives(bases,splits):
@@ -141,6 +155,6 @@ def harvest_negatives(bases,splits):
     save(DATA/'hard-negatives.jsonl',rows)
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--manifest',default=str(DATA/'base-manifest.jsonl'));p.add_argument('--limit',type=int,default=250);a=p.parse_args()
-    rows=build(load(a.manifest),a.limit);print('base pages',sum(not r['is_injected'] for r in rows),'injected',sum(r['is_injected'] for r in rows))
+    p=argparse.ArgumentParser();p.add_argument('--manifest',default=str(DATA/'base-manifest.jsonl'));p.add_argument('--limit',type=int,default=250);p.add_argument('--expanded-payloads',action='store_true');a=p.parse_args()
+    rows=build(load(a.manifest),a.limit,a.expanded_payloads);print('base pages',sum(not r['is_injected'] for r in rows),'injected',sum(r['is_injected'] for r in rows))
 if __name__=='__main__':main()

@@ -6,6 +6,8 @@ Experimental localhost-scoped Chrome extension, Python harness, and Streamlit da
 
 See [implementation status](docs/IMPLEMENTATION_STATUS.md) for completed evidence and outstanding acceptance criteria. This release does not claim the full study is finished.
 
+For work that does **not** execute the benchmark, follow the [review and freeze protocol](docs/REVIEW_PROTOCOL.md): pending review queues, independent-rater statistics, reviewed-node metrics, offline duplicate screening, and content-addressed experiment locks.
+
 ## Windows quick start
 
 Extract the repository ZIP first. Open Command Prompt inside `Whiteout-main`, not Python's `>>>` prompt. Install Python 3.12 and Node.js LTS if your administrator permits them, then run:

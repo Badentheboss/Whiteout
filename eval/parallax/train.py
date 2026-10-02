@@ -12,8 +12,15 @@ BENIGN={
 'validation':['Go to next section','Expand the table of contents','Send feedback about documentation','Previous page','Assistant is the name of a software package','The output is shown below'],
 'test':['Accessible name for this button','Jump to the article','Collapse code example','Read the previous chapter','Follow the installation guide','Tool calls are discussed in this section']}
 def mask(text):return re.sub(r'CANARY-[A-Z0-9-]+','TOKEN',text,flags=re.I)
-def training_rows():
+def training_rows(expanded_payloads=False):
     rows=[]
+    if expanded_payloads:
+        from .payloads_v3 import FAMILIES,render
+        for category in FAMILIES:
+            for split in ['train','validation','test']:
+                for wording in range(3):
+                    family,text=render(category,split,wording,'CANARY-MASKED')
+                    rows.append({'text':mask(text),'label':1,'split':split,'family':family,'label_origin':'machine-authored-unreviewed'})
     for split,indexes in [('train',[0,1,2]),('validation',[3]),('test',[4])]:
         for category,templates in TEMPLATES.items():
             for i in indexes:
@@ -40,8 +47,8 @@ def operating_point(y,scores):
     return max(choices)[2]
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--encoder',action='store_true');a=p.parse_args()
-    rows=training_rows();save(DATA/'training-texts.jsonl',rows)
+    p=argparse.ArgumentParser();p.add_argument('--encoder',action='store_true');p.add_argument('--expanded-payloads',action='store_true');a=p.parse_args()
+    rows=training_rows(a.expanded_payloads);save(DATA/'training-texts.jsonl',rows)
     train=[r for r in rows if r['split']=='train'];val=[r for r in rows if r['split']=='validation']
     texts=[mask(r['text']) for r in train];y=np.array([r['label'] for r in train]);yv=np.array([r['label'] for r in val])
     vec=TfidfVectorizer(ngram_range=(1,2),max_features=12000,strip_accents=None)
