@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "assessment_origin": "AI-assisted triage; not a human or legal approval",
+  "scope": "Conditional local/private research processing only; do not redistribute source replays or bundled assets based on this assessment.",
+  "summary": {
+    "projects": 29,
+    "license_evidence_hash_matches": 29,
+    "conditional_local_only": 29,
+    "human_approvals": 0,
+    "redistribution_approved": 0,
+    "page_terms_reviewed": 0,
+    "third_party_asset_rights_reviewed": 0
+  },
+  "projects": [
+    {
+      "source_group": "aiohttp",
+      "pages": 9,
+      "license_claim": "Apache-2.0",
+      "license_url": "https://raw.githubusercontent.com/aio-libs/aiohttp/master/LICENSE.txt",
+      "license_evidence_sha256": "2e4be5fc6c4c72a466fcb665d726e049a6891981fe536c4f04b6366749461d23",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "altair",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/vega/altair/main/LICENSE",
+      "license_evidence_sha256": "648332da6631555f71f18305b96e9a2c409e73d73613b6c96587cdc0a449e054",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "bokeh",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/bokeh/bokeh/main/LICENSE.txt",
+      "license_evidence_sha256": "55c21d226f8cfa9ace66d354f5749e1c07720ba9b4f9d6023d21d438f4b7a121",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "click",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/pallets/click/main/LICENSE.txt",
+      "license_evidence_sha256": "9a8ad106a394e853bfe21f42f4e72d592819a22805d991b5f3275029292b658d",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "django",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/django/django/main/LICENSE",
+      "license_evidence_sha256": "b846415d1b514e9c1dff14a22deb906d794bc546ca6129f950a18cd091e2a669",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "fastapi",
+      "pages": 9,
+      "license_claim": "MIT",
+      "license_url": "https://raw.githubusercontent.com/fastapi/fastapi/master/LICENSE",
+      "license_evidence_sha256": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "flask",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/pallets/flask/main/LICENSE.txt",
+      "license_evidence_sha256": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "jinja",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/pallets/jinja/main/LICENSE.txt",
+      "license_evidence_sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "matplotlib",
+      "pages": 9,
+      "license_claim": "PSF-derived",
+      "license_url": "https://raw.githubusercontent.com/matplotlib/matplotlib/main/LICENSE/LICENSE",
+      "license_evidence_sha256": "5a1a81ea301728c8bba2933da832c0cd62229daf20893a024ab3d53244468dbc",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "mkdocs",
+      "pages": 9,
+      "license_claim": "BSD-2-Clause",
+      "license_url": "https://raw.githubusercontent.com/mkdocs/mkdocs/master/LICENSE",
+      "license_evidence_sha256": "26041bd625fc39411dc4b32748216236931c904adb90c2b3e0ba697090a5d54e",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "networkx",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/networkx/networkx/main/LICENSE.txt",
+      "license_evidence_sha256": "6025f323ea29dc2f0ee0abd9523bf910186f55b0e148e6ebf646c55566278e2e",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "numpy",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/numpy/numpy/main/LICENSE.txt",
+      "license_evidence_sha256": "1be1df33863f97a7bc1c4d67980bd6c69c9a6fef0a5ee76e6ad6cb91e56e8491",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "packaging",
+      "pages": 9,
+      "license_claim": "BSD-or-Apache",
+      "license_url": "https://raw.githubusercontent.com/pypa/packaging/main/LICENSE",
+      "license_evidence_sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "pandas",
+      "pages": 9,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/pandas-dev/pandas/main/LICENSE",
+      "license_evidence_sha256": "9850f6b5bdef7346503065807b878deb8058b976c5c329f4c4d23bf4796ce9ae",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "pillow",
+      "pages": 9,
+      "license_claim": "MIT-CMU",
+      "license_url": "https://raw.githubusercontent.com/python-pillow/Pillow/main/LICENSE",
+      "license_evidence_sha256": "15181e7363dca9aed78b79bebebc7fde7f1814b8bd311ea3b87ae8ccadfc185b",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "pytest",
+      "pages": 9,
+      "license_claim": "MIT",
+      "license_url": "https://raw.githubusercontent.com/pytest-dev/pytest/main/LICENSE",
+      "license_evidence_sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "python",
+      "pages": 9,
+      "license_claim": "PSF-2.0",
+      "license_url": "https://docs.python.org/3/license.html",
+      "license_evidence_sha256": "757ecc95100533e158296b116d230911304b71db5b58f6ea8b2cb18095cbe758",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "requests",
+      "pages": 9,
+      "license_claim": "Apache-2.0",
+      "license_url": "https://raw.githubusercontent.com/psf/requests/main/LICENSE",
+      "license_evidence_sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "rich",
+      "pages": 8,
+      "license_claim": "MIT",
+      "license_url": "https://raw.githubusercontent.com/Textualize/rich/master/LICENSE",
+      "license_evidence_sha256": "deed7c17a4318158190a3ea239cc879a5a50271cebb98ae7025f48fbe58dca15",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "scipy",
+      "pages": 8,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/scipy/scipy/main/LICENSE.txt",
+      "license_evidence_sha256": "221e59f5e910fd7f94e44f0dac77436a11338c285c6346232e4a850a50da0e94",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "scrapy",
+      "pages": 8,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/scrapy/scrapy/master/LICENSE",
+      "license_evidence_sha256": "fd331af3ccb8776bbe7f317821e5e0b91c2ab7c73464e77425d52204f7b5d980",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "seaborn",
+      "pages": 8,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/mwaskom/seaborn/master/LICENSE.md",
+      "license_evidence_sha256": "357ad276e086fab501163d4e9a0ae13c2fd0647eb08d2305fbc0ca3813892601",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "sklearn",
+      "pages": 8,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/scikit-learn/scikit-learn/main/COPYING",
+      "license_evidence_sha256": "50d6a9d340f19ab355609917993114daf5f47e3161067bcf34955bbd05cd9cb0",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "sphinx",
+      "pages": 8,
+      "license_claim": "BSD-2-Clause",
+      "license_url": "https://raw.githubusercontent.com/sphinx-doc/sphinx/master/LICENSE.rst",
+      "license_evidence_sha256": "802b61d8e268d296d5569de4eb4f5852373e51250100bd5a4087040c4d886de2",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "sqlalchemy",
+      "pages": 8,
+      "license_claim": "MIT",
+      "license_url": "https://raw.githubusercontent.com/sqlalchemy/sqlalchemy/main/LICENSE",
+      "license_evidence_sha256": "e862bb5b904fb5513c3e14288d7a25a12eb0ecc7847a0a965d310e9a955e7cb9",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "sympy",
+      "pages": 8,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/sympy/sympy/master/LICENSE",
+      "license_evidence_sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "tornado",
+      "pages": 8,
+      "license_claim": "Apache-2.0",
+      "license_url": "https://raw.githubusercontent.com/tornadoweb/tornado/master/LICENSE",
+      "license_evidence_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "urllib3",
+      "pages": 8,
+      "license_claim": "MIT",
+      "license_url": "https://raw.githubusercontent.com/urllib3/urllib3/main/LICENSE.txt",
+      "license_evidence_sha256": "130e3a64d5fdd5d096a752694634a7d9df284469de86e5732100268041e3d686",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    },
+    {
+      "source_group": "werkzeug",
+      "pages": 8,
+      "license_claim": "BSD-3-Clause",
+      "license_url": "https://raw.githubusercontent.com/pallets/werkzeug/main/LICENSE.txt",
+      "license_evidence_sha256": "3b49dcee4105eb37bac10faf1be260408fe85d252b8e9df2e0979fc1e094437b",
+      "license_hash_matches": true,
+      "local_private_experiment": "conditional-recommendation",
+      "redistribution": "not-approved"
+    }
+  ],
+  "limitations": [
+    "A repository license file does not establish rights to all hosted documentation text or assets.",
+    "Robots/crawl-delay compliance is enforced during acquisition but is not itself a copyright or terms grant.",
+    "A qualified human must check current site terms, page-specific notices, third-party asset rights, and attribution before any redistribution."
+  ]
+}

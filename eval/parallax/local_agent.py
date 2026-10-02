@@ -1,5 +1,6 @@
 """Optional bounded local generative-model experiment, with no automatic downloads."""
 import argparse,hashlib,json,time
+import gzip
 from pathlib import Path
 from bs4 import BeautifulSoup
 from .dataset import load
@@ -16,11 +17,13 @@ def main():
     model=AutoModelForCausalLM.from_pretrained(model_path,local_files_only=True,trust_remote_code=False).eval()
     observations=load(folder/'observations.jsonl')[:a.max_items];output=[]
     for row in observations:
-        key=row['variant_id']+'-'+row['detector'];extractions=json.loads((folder/'pages'/f'{key}-extraction.json').read_text())
-        title=BeautifulSoup(extractions['before']['raw-html'],'html.parser').title
+        key=row['variant_id']+'-'+row['detector']
+        with gzip.open(folder/'pages'/f"{row['variant_id']}-before-extraction.json.gz",'rt',encoding='utf-8') as stream:before=json.load(stream)
+        with gzip.open(folder/'pages'/f'{key}-after-extraction.json.gz','rt',encoding='utf-8') as stream:after=json.load(stream)
+        title=BeautifulSoup(before['raw-html'],'html.parser').title
         expected=title.get_text(strip=True) if title else None
         for phase in ['before','after']:
-            source=extractions[phase][a.profile]
+            source=(before if phase=='before' else after)[a.profile]
             if source is None:
                 output.append({'variant_id':row['variant_id'],'phase':phase,'profile':a.profile,'answer':None,'reason':'Extraction profile unavailable'})
                 continue

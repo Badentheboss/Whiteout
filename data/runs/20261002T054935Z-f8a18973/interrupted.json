@@ -1,0 +1,12 @@
+{
+  "status": "incomplete-resource-stop",
+  "reason": "Stopped safely after system memory pressure drove swap usage above 11 GB and free disk below 2.5 GB; the harness guard was 1.5 GB.",
+  "planned_variants": 1924,
+  "planned_detector_observations": 3848,
+  "completed_unique_variants": 933,
+  "completed_detector_observations": 1865,
+  "paired_variants": 932,
+  "unpaired_variant_observations": 1,
+  "failures_logged": 0,
+  "note": "Partial descriptive measurements only. Do not treat as a completed held-out benchmark, population estimate, or acceptance result. Per-page observations and metrics are retained locally."
+}

@@ -1,5 +1,6 @@
 import json
 import random
+import gzip
 from pathlib import Path
 import pandas as pd
 import streamlit as st
@@ -17,6 +18,9 @@ if not runs:
 folder=st.sidebar.selectbox('Run',runs,format_func=lambda p:p.name)
 rows=load(folder/'observations.jsonl');meta=json.loads((folder/'metadata.json').read_text())
 st.caption('Actual packaged extension • scripted agent • '+meta['run_id'])
+if (folder/'interrupted.json').exists():
+    interruption=json.loads((folder/'interrupted.json').read_text())
+    st.warning(f"INCOMPLETE RUN — {interruption['completed_unique_variants']}/{interruption['planned_variants']} variants, {interruption['completed_detector_observations']}/{interruption['planned_detector_observations']} observations. Partial metrics are descriptive only.")
 if (folder/'metrics.json').exists():st.json(json.loads((folder/'metrics.json').read_text()),expanded=False)
 detector=st.sidebar.multiselect('Detector',sorted({r['detector'] for r in rows}),default=sorted({r['detector'] for r in rows}))
 vectors=st.sidebar.multiselect('Vector',sorted({r['vector'] for r in rows if r['vector']}))
@@ -35,13 +39,15 @@ if view:
             if candidates:
                 row=candidates[0];st.json(report(folder,row)['findings'],expanded=False)
                 for suffix in ['before','after']:
-                    shot=folder/'pages'/f'{variant}-{det}-{suffix}.png'
+                    shot=folder/'pages'/f'{variant}-{suffix}.jpg' if suffix=='before' else folder/'pages'/f'{variant}-{det}-after.jpg'
                     if shot.exists():st.image(str(shot),caption=suffix)
-                extraction=folder/'pages'/f'{variant}-{det}-extraction.json'
-                if extraction.exists():
-                    data=json.loads(extraction.read_text())
-                    st.text_area('Human-visible text '+det,data['before']['inner-text'],height=120)
-                    st.text_area('Extractor text '+det,data['before']['text-content'],height=120)
+                extraction=folder/'pages'/f'{variant}-before-extraction.json.gz'
+                after_extraction=folder/'pages'/f'{variant}-{det}-after-extraction.json.gz'
+                if extraction.exists() and after_extraction.exists():
+                    with gzip.open(extraction,'rt',encoding='utf-8') as stream:before_data=json.load(stream)
+                    with gzip.open(after_extraction,'rt',encoding='utf-8') as stream:after_data=json.load(stream)
+                    st.text_area('Human-visible text '+det,before_data['inner-text'],height=120)
+                    st.text_area('Extractor text '+det,before_data['text-content'],height=120)
 st.subheader('Human review')
 sampled=[r for r in rows if r['detector']=='classifier'];random.Random(42).shuffle(sampled)
 queue=[];rng=random.Random(42)
@@ -54,12 +60,12 @@ if queue:
     index=st.number_input('Review item',1,len(queue),1)-1;r,c=queue[index]
     st.write(c['text'])
     st.caption('Judge the saved page evidence before revealing detector reasons. Leave uncertain judgments pending.')
-    review_shot=folder/'pages'/f"{r['variant_id']}-{r['detector']}-before.png"
+    review_shot=folder/'pages'/f"{r['variant_id']}-before.jpg"
     if review_shot.exists():st.image(str(review_shot),caption='Before sanitization (viewport only)')
     else:st.warning('Screenshot is missing; obtain the complete run bundle before judging visibility.')
     with st.expander('Detector evidence (may bias your judgment)'):st.write(c['reasons']);st.write(c['path'])
     with st.form('rating'):
-        rater=st.text_input('Rater pseudonym','reviewer-1')
+        rater=st.text_input('Rater pseudonym','')
         visible=st.selectbox('A person could see this text',['Unreviewed / uncertain','Yes','No'])
         instruction=st.selectbox('This instructs an AI assistant',['Unreviewed / uncertain','Yes','No'])
         notes=st.text_area('Reason or ambiguity')

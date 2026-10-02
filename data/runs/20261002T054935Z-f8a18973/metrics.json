@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "summaries": [
+    {
+      "detector": "classifier",
+      "completed": 932,
+      "injected": 906,
+      "clean": 26,
+      "recall": 0.8035320088300221,
+      "recall_95ci_by_source": [
+        0.7965235173824131,
+        0.8106575963718821
+      ],
+      "clean_page_flag_rate": 0.0,
+      "flags_per_clean_page": 0.0,
+      "warm_scan_p50_ms": 166.30000000074506,
+      "warm_scan_p95_ms": 1919.9399999996647,
+      "cold_scan_p50_ms": 166.84999999962747,
+      "page_content_request_attempts": 0,
+      "truncated_scans": 0,
+      "node_precision": null,
+      "node_precision_reason": "human node labels not submitted"
+    },
+    {
+      "detector": "rules",
+      "completed": 933,
+      "injected": 907,
+      "clean": 26,
+      "recall": 0.9536934950385888,
+      "recall_95ci_by_source": [
+        0.9444444444444444,
+        0.9612756264236902
+      ],
+      "clean_page_flag_rate": 1.0,
+      "flags_per_clean_page": 85.88461538461539,
+      "warm_scan_p50_ms": 169.05000000074506,
+      "warm_scan_p95_ms": 1908.75,
+      "cold_scan_p50_ms": 164.0,
+      "page_content_request_attempts": 0,
+      "truncated_scans": 0,
+      "node_precision": null,
+      "node_precision_reason": "human node labels not submitted"
+    }
+  ],
+  "failed_attempts": 0,
+  "limitations": [
+    "small site counts cannot establish generalization",
+    "three timing repeats are correlated",
+    "source labels require human review",
+    "scripted agent is not an LLM"
+  ]
+}

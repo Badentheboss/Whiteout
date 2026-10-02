@@ -8,6 +8,7 @@ This is a research infrastructure release, **not completion of every acceptance 
 
 - `20261002T044438Z-0d1fdf3a`: 78 validation pages × two detectors = 156 observations; 72 injections and six controls per detector, six projects, no failures. Both detectors found 63/72 injections (87.5%). Rules flagged 6/6 controls; classifier flagged 0/6. This small pilot cannot establish a population 2% FPR. Raw observations, metrics, figures, and calibration provenance are retained.
 - `20261002T045423Z-0245970f`: 13 authored smoke pages × two detectors; all 12 injected vectors detected, all click tasks passed. Authored regression evidence only.
+- `20261002T054935Z-f8a18973`: interrupted test-split run, 933/1,924 variants and 1,865/3,848 detector observations (932 paired variants, one unmatched observation), six source groups, zero logged per-page failures. It was stopped when this 8 GB Mac reached 13.2 GB swap use and 2.0 GB free disk. The partial observations are retained locally with `interrupted.json`; they are **not** a completed benchmark. On this prefix, rules detected 95.37% of 907 injections but flagged all 26 clean controls (85.9 flags/control); classifier detected 80.35% of 906 injections and flagged 0/26 controls. These prefix-only numbers and intervals are descriptive, not final or population estimates. Warm p50 scans were 169 ms (rules) and 166 ms (classifier), with warm p95 near 1.9 s. The full split needs a machine with more available memory/storage or a deliberately re-scoped sample.
 - Packaged extension regression tests exercise warn preservation, undo, duplicate nodes, tabs/frames, inaccessible frames, dynamic content, exact extraction removal, and a blocked transmission fixture.
 - Optional local ONNX parity test passed against Python inference for English, French, punctuation, and Chinese samples.
 
@@ -30,7 +31,7 @@ Follow-up verification: 22 Python tests passed, Python compilation passed, dashb
 - Broader article/forum/store/interactive-app coverage and page-level terms/assets review. All 250 selected bases are documentation; all downloaded replays are excluded from preservation conclusions.
 - At least 300 human-curated hidden examples. The 4,495 existing benign candidates are explicitly machine-labeled, not reviewed.
 - More independent positive template families and wording diversity; semantic deduplication beyond exact hashes.
-- Full 9,250-row execution with the frozen final release, including untouched held-out test reporting. Only pilot/smoke execution is claimed here.
+- Full 9,250-row execution, complete 1,924-variant held-out test reporting, and a finalized test report. The partial run above must not be presented as satisfying these requirements.
 - Human node ground truth for node precision/recall/F1, reviewed navigation tasks, and submitted 30-item ratings.
 - An executed bounded generative local-agent study. The optional local-model command exists, but no suitable generative model was provisioned; scripted probes are not LLM security evidence.
 - Broader extraction/frame mapping and multilingual tokenizer parity, complex occlusion/clip/background tests, and shared/external pseudo-source sanitation.

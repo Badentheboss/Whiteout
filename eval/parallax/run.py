@@ -55,7 +55,7 @@ async def run(args):
         for code in Path(__file__).parent.glob('*.py'):shutil.copyfile(code,folder/'harness'/code.name)
         shutil.copyfile(manifest,folder/'manifest.jsonl')
     config={'manifest_sha256':fingerprint,'harness_sha256':harness_hash.hexdigest(),'split':args.split,'limit':args.limit,'detectors':args.detectors,'repeats':3,
-            'extension_sha256':extension_hash.hexdigest(),
+            'extension_sha256':extension_hash.hexdigest(),'artifact_format':'jpeg35-shared-before+gzip-extractions-v2',
             'freeze_sha256':hashlib.sha256(Path(lock_path).read_bytes()).hexdigest() if lock_path else None}
     metadata_path=folder/'metadata.json'
     if args.resume:
@@ -91,6 +91,8 @@ async def run(args):
             for index,item in enumerate(rows):
                 for detector in args.detectors:
                     if (item['variant_id'],detector) in done:continue
+                    if shutil.disk_usage(folder).free < 1_500_000_000:
+                        raise RuntimeError('Stopped before disk fell below 1.5 GB free; resume on storage with more capacity')
                     page=await browser.context.new_page()
                     started=len(requests)
                     try:
@@ -108,7 +110,15 @@ async def run(args):
                             # Discard task side effects before scan and screenshot measurements.
                             await page.goto(url,wait_until='load',timeout=30000);hello=await browser.ready(page)
                         cdp=await browser.context.new_cdp_session(page);await cdp.send('Performance.enable')
-                        before=await extraction(page,cdp);shot_before=await page.screenshot()
+                        before=await extraction(page,cdp)
+                        before_extraction=folder/'pages'/f'{item["variant_id"]}-before-extraction.json.gz'
+                        if not before_extraction.exists():
+                            with gzip.open(before_extraction,'wt',encoding='utf-8') as stream:json.dump(before,stream)
+                        shot_before_path=folder/'pages'/f'{item["variant_id"]}-before.jpg'
+                        if not shot_before_path.exists():
+                            shot_before=await page.screenshot(type='jpeg',quality=35,scale='css')
+                            shot_before_path.write_bytes(shot_before)
+                        shot_before=shot_before_path.read_bytes()
                         await page.evaluate('window.__parallaxLongTasks=[]')
                         timings=[];report=None;initial_metrics=await cdp.send('Performance.getMetrics')
                         for repeat in range(3):
@@ -122,7 +132,8 @@ async def run(args):
                                 candidate['profiles'][profile],candidate['exposure_reasons'][profile]=exposure(candidate,before,profile)
                         long_before=await page.evaluate('window.__parallaxLongTasks')
                         actions=(await browser.request(page,'sanitize',detector))['actions']
-                        after=await extraction(page,cdp);shot_after=await page.screenshot()
+                        after=await extraction(page,cdp)
+                        shot_after=await page.screenshot(type='jpeg',quality=35,scale='css')
                         task=item.get('task');task_success=None;task_reason='No reviewed interaction task for this source replay'
                         interaction_after=None
                         if steps:
@@ -161,9 +172,9 @@ async def run(args):
                         row['report_path']='pages/'+key+'-report.json.gz'
                         with gzip.open(folder/row['report_path'],'wt',encoding='utf-8') as f:json.dump(detail,f)
                         row['report_sha256']=hashlib.sha256((folder/row['report_path']).read_bytes()).hexdigest()
-                        (folder/'pages'/f'{key}-before.png').write_bytes(shot_before)
-                        (folder/'pages'/f'{key}-after.png').write_bytes(shot_after)
-                        (folder/'pages'/f'{key}-extraction.json').write_text(json.dumps({'before':before,'after':after}),encoding='utf-8')
+                        (folder/'pages'/f'{key}-after.jpg').write_bytes(shot_after)
+                        after_path=folder/'pages'/f'{key}-after-extraction.json.gz'
+                        with gzip.open(after_path,'wt',encoding='utf-8') as stream:json.dump(after,stream)
                         with (folder/'observations.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps(row)+'\n')
                     except Exception as error:
                         with (folder/'errors.jsonl').open('a',encoding='utf-8') as f:f.write(json.dumps({'variant_id':item['variant_id'],'detector':detector,'error':str(error)})+'\n')
