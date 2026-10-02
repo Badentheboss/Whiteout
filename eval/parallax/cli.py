@@ -1,8 +1,10 @@
 import argparse
 from . import prepare, run, evaluate
 def main():
- p=argparse.ArgumentParser(prog='parallax'); p.add_argument('command',choices=['prepare','run','evaluate','dashboard']); a=p.parse_args()
+ p=argparse.ArgumentParser(prog='parallax'); p.add_argument('command',choices=['prepare','fetch-real','run','evaluate','dashboard']); a=p.parse_args()
  if a.command=='prepare': prepare.main()
+ elif a.command=='fetch-real':
+  from . import real_corpus; real_corpus.main()
  elif a.command=='run': run.main()
  elif a.command=='evaluate': evaluate.main()
  else:

@@ -18,6 +18,10 @@ The committed data are a deterministic 100-page, project-authored CC0 local benc
 
 The evaluation harness uses an installed Google Chrome channel rather than Playwright's separately downloaded Chromium. This makes the run friendlier to managed campus PCs; Chrome must already be installed and permitted to launch.
 
+## Optional real-document upgrade
+
+`data/sources/approved_docs.jsonl` is a reviewed registry of 25 public documentation pages from Python, MDN, Django, Flask, and FastAPI, with source attribution and license URLs. Run `python -m parallax.real_corpus` only from a network that permits it: it checks each site's `robots.txt`, uses a named user agent, rate-limits to one request per second, stores snapshots only under ignored `data/external-fixtures/`, and writes a 250-variant provenance manifest. Run it with `PARALLAX_MANIFEST=data/external-manifest.jsonl python -m parallax.run`. These source-derived files are never committed; review each fetched page and its license before publishing derived artifacts.
+
 `npm run package` writes the unpacked extension zip to `store/`. Load `extension/dist` through `chrome://extensions` → Developer mode → Load unpacked. The extension uses only `storage`, analyzes locally, sends no page text to a server, and retains reports only for the current browser session.
 
 ## Detector modes

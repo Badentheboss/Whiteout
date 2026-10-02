@@ -10,3 +10,5 @@
 | scikit-learn | 1.7.2 | PyPI checked during environment setup |
 
 MV3's service worker cannot access the DOM; DOM analysis remains in the content script. Manifest V3 disallows remotely hosted executable code, so any future ONNX model must be packaged with the extension.
+
+Source-license verification (2026-10-01): Python documentation is PSF-licensed; MDN documentation is CC-BY-SA 2.5 or later with attribution/share-alike requirements; Django documentation is BSD-3-Clause; Flask documentation is BSD-3-Clause; FastAPI is MIT. See `data/sources/approved_docs.jsonl` for per-source attribution and license links.
